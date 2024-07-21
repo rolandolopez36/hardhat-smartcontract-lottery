@@ -38,14 +38,15 @@ The Hardhat Smart Contract Lottery Project is a decentralized application (DApp)
 To deploy the Raffle smart contract, follow these steps:
 
 1. **Deploy Mocks (for local development)**:
-   \`\`\`sh
+
+   ```
    npx hardhat deploy --network localhost
-   \`\`\`
+   ```
 
 2. **Deploy Raffle Contract**:
-   \`\`\`sh
+   ```
    npx hardhat deploy --network sepolia
-   \`\`\`
+   ```
 
 ### Smart Contract: \`Raffle.sol\`
 
@@ -54,42 +55,45 @@ The \`Raffle.sol\` smart contract manages the entire raffle process, including p
 #### Important Code Snippets:
 
 - **Constructor**: Initializes the contract with necessary parameters.
-  \`\`\`solidity
+
+  ```solidity
   constructor(
-  address vrfCoordinatorV2,
-  uint64 subscriptionId,
-  bytes32 gasLane,
-  uint256 interval,
-  uint256 entranceFee,
-  uint32 callbackGasLimit
+    address vrfCoordinatorV2,
+    uint64 subscriptionId,
+    bytes32 gasLane,
+    uint256 interval,
+    uint256 entranceFee,
+    uint32 callbackGasLimit
   ) VRFConsumerBaseV2(vrfCoordinatorV2) {
-  i_vrfCoordinator = VRFCoordinatorV2Interface(vrfCoordinatorV2);
-  i_gasLane = gasLane;
-  i_interval = interval;
-  i_subscriptionId = subscriptionId;
-  i_entranceFee = entranceFee;
-  s_raffleState = RaffleState.OPEN;
-  s_lastTimeStamp = block.timestamp;
-  i_callbackGasLimit = callbackGasLimit;
+    i_vrfCoordinator = VRFCoordinatorV2Interface(vrfCoordinatorV2);
+    i_gasLane = gasLane;
+    i_interval = interval;
+    i_subscriptionId = subscriptionId;
+    i_entranceFee = entranceFee;
+    s_raffleState = RaffleState.OPEN;
+    s_lastTimeStamp = block.timestamp;
+    i_callbackGasLimit = callbackGasLimit;
   }
-  \`\`\`
+  ```
 
 - **Enter Raffle**: Allows players to enter the raffle by paying the entrance fee.
-  \`\`\`solidity
+
+  ```solidity
   function enterRaffle() public payable {
-  if (msg.value < i_entranceFee) {
-  revert Raffle**SendMoreToEnterRaffle();
+    if (msg.value < i_entranceFee) {
+      revert Raffle ** SendMoreToEnterRaffle();
+    }
+    if (s_raffleState != RaffleState.OPEN) {
+      revert Raffle ** RaffleNotOpen();
+    }
+    s_players.push(payable(msg.sender));
+    emit RaffleEnter(msg.sender);
   }
-  if (s_raffleState != RaffleState.OPEN) {
-  revert Raffle**RaffleNotOpen();
-  }
-  s_players.push(payable(msg.sender));
-  emit RaffleEnter(msg.sender);
-  }
-  \`\`\`
+  ```
 
 - **Perform Upkeep**: Called by Chainlink Keepers to check if the raffle needs to be run.
-  \`\`\`solidity
+
+  ```solidity
   function performUpkeep(bytes calldata /_ performData _/) external override {
   (bool upkeepNeeded, ) = checkUpkeep("");
   if (!upkeepNeeded) {
@@ -109,10 +113,10 @@ The \`Raffle.sol\` smart contract manages the entire raffle process, including p
   );
   emit RequestedRaffleWinner(requestId);
   }
-  \`\`\`
+  ```
 
 - **Fulfill Random Words**: Called by Chainlink VRF to provide the random number for selecting the winner.
-  \`\`\`solidity
+  ```solidity
   function fulfillRandomWords(
   uint256,
   uint256[] memory randomWords
@@ -129,7 +133,7 @@ The \`Raffle.sol\` smart contract manages the entire raffle process, including p
   }
   emit WinnerPicked(recentWinner);
   }
-  \`\`\`
+  ```
 
 ### Testing
 
@@ -140,18 +144,20 @@ The project includes unit tests and staging tests to ensure the smart contract f
 Unit tests are performed on a local development network using mocks to simulate external dependencies like Chainlink VRF and Automation.
 
 **Running Unit Tests**:
-\`\`\`sh
+
+```
 npx hardhat test
-\`\`\`
+```
 
 #### Staging Tests: \`Raffle.staging.test.js\`
 
 Staging tests are performed on test networks like Sepolia to simulate real-world conditions.
 
 **Running Staging Tests**:
-\`\`\`sh
+
+```
 npx hardhat test --network sepolia
-\`\`\`
+```
 
 ### Additional Resources
 
