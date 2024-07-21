@@ -22,15 +22,16 @@ The Hardhat Smart Contract Lottery Project is a decentralized application (DApp)
 ### Installation
 
 1. **Clone the repository**:
-   \`\`\`sh
+
+   ```
    git clone https://github.com/rolandolopez36/hardhat-smartcontract-lottery.git
    cd hardhat-smartcontract-lottery
-   \`\`\`
+   ```
 
 2. **Install dependencies**:
-   \`\`\`sh
+   ```
    yarn install
-   \`\`\`
+   ```
 
 ### Deployment
 
